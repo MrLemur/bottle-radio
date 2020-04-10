@@ -1,0 +1,90 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+      - "8005:8005"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.https.address=:443"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.streaming.address=:8005"
+      - "--certificatesresolvers.resolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.resolver.acme.email=`${LETSENCRYPT_EMAIL}`"
+      - "--certificatesresolvers.resolver.acme.storage=/letsencrypt/acme.json"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.redirs.entrypoints=http"
+      - "traefik.http.routers.redirs.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./.env:/tmp/.env:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.frontend.tls=true"
+      - "traefik.http.routers.frontend.tls.certresolver=resolver"
+
+  mopidy:
+    build:
+      context: ./mopidy
+    command:
+      - "-o spotify/username=${SPOTIFY_USERNAME}"
+      - "-o spotify/password=${SPOTIFY_PASSWORD}"
+      - "-o spotify/client_id=${SPOTIFY_CLIENT_ID}"
+      - "-o spotify/client_secret=${SPOTIFY_CLIENT_SECRET}"
+    depends_on:
+      - liquidsoap
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mopidy.rule=Host(`spotify.${DOMAIN}`)"
+      - "traefik.http.routers.mopidy.tls=true"
+      - "traefik.http.routers.mopidy.tls.certresolver=resolver"
+      - "traefik.http.middlewares.mopidy_auth.basicauth.users=${MOPIDY_AUTH}"
+      - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
+
+  liquidsoap:
+    build:
+      context: ./liquidsoap
+    volumes:
+      - ./conf:/etc/liquidsoap
+    depends_on:
+      - icecast
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.liquidsoap.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.liquidsoap.entryPoints=streaming"
+      - "traefik.tcp.services.liquidsoap.loadbalancer.server.port=8005"
+
+  icecast:
+    image: moul/icecast
+    environment:
+      - ICECAST_SOURCE_PASSWORD=admin
+      - ICECAST_ADMIN_PASSWORD=admin
+      - ICECAST_PASSWORD=admin
+      - ICECAST_RELAY_PASSWORD=admin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.icecast.rule=Host(`stream.${DOMAIN}`)"
+      - "traefik.http.routers.icecast.tls=true"
+      - "traefik.http.routers.icecast.tls.certresolver=resolver"
+      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
+      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.icecast_cors.headers.addvaryheader=true"
+      - "traefik.http.routers.icecast.middlewares=icecast_cors@docker"
