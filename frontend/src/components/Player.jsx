@@ -43,7 +43,11 @@ const Player = () => {
   const { colorMode } = useColorMode();
   const colorHover = { light: "white", dark: "black" };
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const trackLinks = useSaveTrack(nowPlaying[0], nowPlaying[1]);
+  const trackLinks = useSaveTrack(
+    nowPlaying[0],
+    nowPlaying[1],
+    variables.REACT_KEY
+  );
   const audioRef = useRef(null);
   const { setPlayer } = useContext(VisualiserContext);
 

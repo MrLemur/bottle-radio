@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 
-const useSaveTrack = (track, artist) => {
+const useSaveTrack = (track, artist, key) => {
   const [trackList, setTrackList] = useState();
   const getApi = async (url) => {
     let response = await fetch(url);
     return await response.json();
   };
 
-  let timestamp = new Date().getTime();
-  const searchUrl = `https://itunes.apple.com/search?term=${track} ${artist}&country=IE&entity=song&key=${timestamp}`;
+  const searchUrl = `https://itunes.apple.com/search?term=${track} ${artist}&country=IE&entity=song&key=${key}`;
 
   useEffect(() => {
     let links = [];
