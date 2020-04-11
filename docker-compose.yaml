@@ -20,7 +20,7 @@ services:
       - "--entrypoints.http.address=:80"
       - "--entrypoints.streaming.address=:8005"
       - "--certificatesresolvers.resolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.resolver.acme.email=`${LETSENCRYPT_EMAIL}`"
+      - "--certificatesresolvers.resolver.acme.email=${LETSENCRYPT_EMAIL}"
       - "--certificatesresolvers.resolver.acme.storage=/letsencrypt/acme.json"
     labels:
       - "traefik.enable=true"
