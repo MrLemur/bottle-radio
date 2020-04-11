@@ -7,7 +7,8 @@ const useSaveTrack = (track, artist) => {
     return await response.json();
   };
 
-  const searchUrl = `https://itunes.apple.com/search?term=${track} ${artist}&country=IE&entity=song`;
+  let timestamp = new Date().getTime();
+  const searchUrl = `https://itunes.apple.com/search?term=${track} ${artist}&country=IE&entity=song&key=${timestamp}`;
 
   useEffect(() => {
     let links = [];
@@ -20,14 +21,19 @@ const useSaveTrack = (track, artist) => {
               if (node[0].includes("AUTOMATED_LINK")) {
                 if (node[1].matchNodeUniqueId) {
                   let currentNode = node[1];
-                  if (currentNode.sectionNodeUniqueId === "AUTOMATED_SECTION::LISTEN") {
+                  if (
+                    currentNode.sectionNodeUniqueId ===
+                    "AUTOMATED_SECTION::LISTEN"
+                  ) {
                     links.push({
                       type: "listen",
                       displayName: currentNode.displayName,
                       url: currentNode.url,
                     });
                   }
-                  if (currentNode.sectionNodeUniqueId === "AUTOMATED_SECTION::BUY") {
+                  if (
+                    currentNode.sectionNodeUniqueId === "AUTOMATED_SECTION::BUY"
+                  ) {
                     links.push({
                       type: "buy",
                       displayName: currentNode.displayName,
