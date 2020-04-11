@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import {
   Slider,
   SliderTrack,
@@ -29,7 +29,9 @@ import {
   FaHeart,
 } from "react-icons/fa";
 import useSaveTrack from "./useSaveTrack";
-import ModalContext from "./ModalContext";
+
+import { ModalContext, VisualiserContext } from "./Contexts";
+import { useRef } from "react";
 
 const Player = () => {
   const variables = window._env_ ? window._env_ : { REACT_ICECAST_URL: "" };
@@ -42,6 +44,15 @@ const Player = () => {
   const colorHover = { light: "white", dark: "black" };
   const { isOpen, onOpen, onClose } = useDisclosure();
   const trackLinks = useSaveTrack(nowPlaying[0], nowPlaying[1]);
+  const audioRef = useRef(null);
+  const { setPlayer } = useContext(VisualiserContext);
+
+  useEffect(() => {
+    const audio = document.getElementById("player");
+    if (audio) {
+      setPlayer(audioRef);
+    }
+  }, [setPlayer]);
 
   useEffect(() => {
     const updateStats = async () => {
@@ -102,23 +113,23 @@ const Player = () => {
             onClose();
             setModal();
           }}
-          size='sm'
+          size="sm"
           isCentered
         >
           <ModalOverlay />
           <ModalContent>
             <ModalCloseButton />
             <ModalBody>
-              <Grid templateColumns='1fr 1fr' justifyItems='center' gap={0}>
+              <Grid templateColumns="1fr 1fr" justifyItems="center" gap={0}>
                 {modal ? (
                   modal.map((link) => (
                     <Link key={link.url} href={link.url} isExternal>
-                      <Button variant='ghost'>{link.displayName}</Button>
+                      <Button variant="ghost">{link.displayName}</Button>
                     </Link>
                   ))
                 ) : (
                   <div>
-                    <Spinner size='sm' /> Loading...
+                    <Spinner size="sm" /> Loading...
                   </div>
                 )}
               </Grid>
@@ -130,87 +141,97 @@ const Player = () => {
   };
 
   return (
-    <div>
-      <Flex
-        direction='column'
-        justify='center'
-        align='center'
-        width='100%'
-        height='100%'
-      >
-        <Box>
-          <Grid
-            m={2}
-            p={2}
-            templateColumns='auto 1fr auto'
-            alignItems='center'
-            gap={1}
-          >
-            <PseudoBox
-              gridRow='1/4'
-              size='80px'
-              aria-label='Play toggle'
-              as={loading ? FaSpinner : playing ? FaPauseCircle : FaPlayCircle}
-              onClick={togglePlay}
-              _hover={{ color: colorHover[colorMode] }}
-              mr={1}
-              className={loading ? "icon-spin" : ""}
-            />
-            <Text m={0} align='right'>
-              <strong>{nowPlaying[0]}</strong>
-            </Text>
-            <Text m={0} align='right'>
-              {nowPlaying[1]}
-            </Text>
-
-            <Flex direction='row' justify='center' maxWidth={400} p={2}>
-              <Slider
-                defaultValue={100}
-                min={0}
-                max={100}
-                step={10}
-                onChange={changeVolume}
-                width={80}
-              >
-                <SliderTrack />
-                <SliderFilledTrack bg='tomato' />
-                <SliderThumb size={2} />
-              </Slider>
-              <Box size='20px' as={muted ? FaVolumeMute : FaVolumeUp} ml={3} />
-              <audio
-                id='player'
-                autoPlay
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                onLoadStart={() => setLoading(true)}
-                onLoadedData={() => setLoading(false)}
-              >
-                <source
-                  src={variables.REACT_ICECAST_URL + "radio.mp3"}
-                  type='audio/mp3'
-                />
-                Your browser does not support the audio element.
-              </audio>
-            </Flex>
-            <Text gridColumn='1/4'>
-              <strong>Listeners: </strong>
-              {listeners[0]} <strong>Peak: </strong>
-              {listeners[1]}
-            </Text>
-            <Box gridColumn='3' gridRow='1/4' alignItems='center'>
+ 
+      <div>
+        <Flex
+          direction="column"
+          justify="center"
+          align="center"
+          width="100%"
+          height="100%"
+        >
+          <Box>
+            <Grid
+              m={2}
+              p={2}
+              templateColumns="auto 1fr auto"
+              alignItems="center"
+              gap={1}
+            >
               <PseudoBox
-                size='25px'
-                as={FaHeart}
-                mx={1}
-                onClick={onOpen}
-                _hover={{ color: "tomato" }}
+                gridRow="1/4"
+                size="80px"
+                aria-label="Play toggle"
+                as={
+                  loading ? FaSpinner : playing ? FaPauseCircle : FaPlayCircle
+                }
+                onClick={togglePlay}
+                _hover={{ color: colorHover[colorMode] }}
+                mr={1}
+                className={loading ? "icon-spin" : ""}
               />
-              {isOpen ? <TrackModal /> : null}
-            </Box>
-          </Grid>
-        </Box>
-      </Flex>
-    </div>
+              <Text m={0} align="right">
+                <strong>{nowPlaying[0]}</strong>
+              </Text>
+              <Text m={0} align="right">
+                {nowPlaying[1]}
+              </Text>
+
+              <Flex direction="row" justify="center" maxWidth={400} p={2}>
+                <Slider
+                  defaultValue={100}
+                  min={0}
+                  max={100}
+                  step={10}
+                  onChange={changeVolume}
+                  width={80}
+                >
+                  <SliderTrack />
+                  <SliderFilledTrack bg="tomato" />
+                  <SliderThumb size={2} />
+                </Slider>
+                <Box
+                  size="20px"
+                  as={muted ? FaVolumeMute : FaVolumeUp}
+                  ml={3}
+                />
+                <audio
+                  id="player"
+                  crossorigin="anonymouse"
+                  ref={audioRef}
+                  autoPlay
+                  onPlay={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
+                  onLoadStart={() => setLoading(true)}
+                  onLoadedData={() => setLoading(false)}
+                >
+                  <source
+                    src="http://live-absolute.sharp-stream.com/absolute80s.mp3"
+                    type="audio/mp3"
+                  />
+                  Your browser does not support the audio element.
+                </audio>
+              </Flex>
+              <Text gridColumn="1/4">
+                <strong>Listeners: </strong>
+                {listeners[0]} <strong>Peak: </strong>
+                {listeners[1]}
+              </Text>
+              <Box gridColumn="3" gridRow="1/4" alignItems="center">
+                <PseudoBox
+                  size="25px"
+                  as={FaHeart}
+                  mx={1}
+                  onClick={onOpen}
+                  _hover={{ color: "tomato" }}
+                />
+                {isOpen ? <TrackModal /> : null}
+              </Box>
+            </Grid>
+          </Box>
+        </Flex>
+      </div>
+
   );
 };
 export default Player;
