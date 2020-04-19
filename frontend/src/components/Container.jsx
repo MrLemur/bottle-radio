@@ -10,6 +10,8 @@ import {
   PseudoBox,
   Code,
   Collapse,
+  Text,
+  Link,
 } from "@chakra-ui/core";
 import { FaSun, FaMoon } from "react-icons/fa";
 import { ModalProvider, VisualiserProvider } from "./Contexts";
@@ -99,6 +101,16 @@ const Container = () => {
               </Button>
             </Box>
             <EmbedCode />
+            <Text mb={3}>
+              Powered by{" "}
+              <Link
+                href="https://github.com/MrLemur/bottle-radio"
+                color="teal.500"
+                isExternal
+              >
+                Bottle Radio
+              </Link>
+            </Text>
           </Flex>
         </Box>
       </VisualiserProvider>
