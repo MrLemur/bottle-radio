@@ -13,6 +13,12 @@ set("encoder.encoder.export",["artist","title","album","song"])
 
 setenv("TZ", "UTC")
 
+def get_var(variable, default) =
+  env_var = getenv(variable)
+  log(env_var)
+  if env_var == "" then default else env_var end
+end
+
 # Define a transition that fades out the
 # old source, adds a jingle, and then 
 # plays the new source
@@ -51,7 +57,7 @@ def fix_live_metadata(m) =
 end
 
 # Live Broadcasting
-live = audio_to_stereo(input.harbor("/", id = "live_streamer_input", port = 8005,  user = "dj", password = "dj", icy = true, icy_metadata_charset = "UTF-8", metadata_charset = "UTF-8", buffer = 5.0))
+live = audio_to_stereo(input.harbor("/", id = "live_streamer_input", port = 8005,  user = get_var("LIQUIDSOAP_DJ_USERNAME","dj"), password = get_var("LIQUIDSOAP_DJ_PASSWORD","dj"), icy = true, icy_metadata_charset = "UTF-8", metadata_charset = "UTF-8", buffer = 5.0))
 # Add metadata if missing to live stream
 live = map_metadata(fix_live_metadata, live)
 ignore(output.dummy(live, fallible=true))
@@ -59,4 +65,4 @@ ignore(output.dummy(live, fallible=true))
 radio = fallback(track_sensitive=false,transition_length=11.0,transitions=[to_live(jingle),from_live(jingle)],[live,mopidy_stream])
 
 # Local Broadcasts
-output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = "admin", mount = "/radio.mp3", name = "Bottle Radio", description = "Radio in a bottle.", genre = "", public = false, encoding = "UTF-8", radio)
+output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = get_var("ICECAST_SOURCE_PASSWORD","admin"), mount = "/radio.mp3", name = "Bottle Radio", description = "Radio in a bottle.", genre = "", public = false, encoding = "UTF-8", radio)

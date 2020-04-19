@@ -61,6 +61,10 @@ services:
   liquidsoap:
     build:
       context: ./liquidsoap
+    environment:
+      - LIQUIDSOAP_DJ_USERNAME=${LIQUIDSOAP_DJ_USERNAME}
+      - LIQUIDSOAP_DJ_PASSWORD=${LIQUIDSOAP_DJ_PASSWORD}
+      - ICECAST_SOURCE_PASSWORD=${ICECAST_SOURCE_PASSWORD}
     volumes:
       - ./conf:/etc/liquidsoap
     depends_on:
@@ -74,10 +78,10 @@ services:
   icecast:
     image: moul/icecast
     environment:
-      - ICECAST_SOURCE_PASSWORD=admin
-      - ICECAST_ADMIN_PASSWORD=admin
-      - ICECAST_PASSWORD=admin
-      - ICECAST_RELAY_PASSWORD=admin
+      - ICECAST_SOURCE_PASSWORD=${ICECAST_SOURCE_PASSWORD}
+      - ICECAST_ADMIN_PASSWORD=${ICECAST_ADMIN_PASSWORD}
+      - ICECAST_PASSWORD=${ICECAST_PASSWORD}
+      - ICECAST_RELAY_PASSWORD=${ICECAST_RELAY_PASSWORD}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.icecast.rule=Host(`stream.${DOMAIN}`)"
