@@ -65,4 +65,4 @@ ignore(output.dummy(live, fallible=true))
 radio = fallback(track_sensitive=false,transition_length=11.0,transitions=[to_live(jingle),from_live(jingle)],[live,mopidy_stream])
 
 # Local Broadcasts
-output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = get_var("ICECAST_SOURCE_PASSWORD","admin"), mount = "/radio.mp3", name = "Bottle Radio", description = "Radio in a bottle.", genre = "", public = false, encoding = "UTF-8", radio)
+output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = get_var("ICECAST_SOURCE_PASSWORD","admin"), mount = "/radio.mp3", name = "Tempo Schmempo Radio, description = "Tempo Schmempo Radio Communications", genre = "", public = false, encoding = "UTF-8", radio)
