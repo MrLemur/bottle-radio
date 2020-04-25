@@ -198,7 +198,7 @@ By using Mopidy, Spotify playback can be achieved when there is not a live strea
 
 This application will accept input from any Icecast 2 compatible source client (Butt, Mixxx) without any configuration changes. Follow the steps below to start live streaming:
 
-- Configure the host as `liquidsoap.your.domain`
+- Configure the host as `your.domain`
 - Set port as `8005`
 - Set protocol to be `Icecast 2`
 - Set the mount point to `/`.
