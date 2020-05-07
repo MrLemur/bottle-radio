@@ -42,7 +42,7 @@ RUN chmod +x /opt/mpc_pause_check.sh
 
 USER mopidy
 
-HEALTHCHECK --interval=5m --timeout=30s CMD sh /opt/mpc_pause_check.sh
+HEALTHCHECK --interval=60s --timeout=30s CMD sh /opt/mpc_pause_check.sh
 
 EXPOSE 6680
 
