@@ -4,14 +4,8 @@ const Visualisation = (props) => {
   useEffect(() => {
     const renderVisualisation = () => {
       // Add compatibility check for Safari
-      if ("webkitAudioContext" in window) {
-        let context = new webkitAudioContext();
-      } else if ("AudioContext" in window) {
-        let context = new AudioContext();
-      } else {
-        console.log("Audio API is not supported.");
-        return false;
-      }
+      let AudioContext = window.AudioContext || window.webkitAudioContext;
+      let context = new AudioContext();
 
       let src = context.createMediaElementSource(props.audio);
       let analyser = context.createAnalyser();
