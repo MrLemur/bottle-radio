@@ -15,7 +15,7 @@ const useSaveTrack = (track, artist, key) => {
       if (data.results[0] && data.results[0].wrapperType === "track") {
         const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.song.link/page?url=https://song.link/i/${data.results[0].trackId}`;
         getApi(apiUrl).then((streamingServices) => {
-          if (streamingServices.inputMatchData.matches) {
+          if (streamingServices && streamingServices.inputNodeUniqueId) {
             Object.entries(streamingServices.nodesByUniqueId).map((node) => {
               if (node[0].includes("AUTOMATED_LINK")) {
                 if (node[1].matchNodeUniqueId) {
