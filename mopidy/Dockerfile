@@ -36,7 +36,13 @@ RUN apt-get purge --auto-remove -y \
 
 COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
 
+COPY mpc_pause_check.sh /opt/
+
+RUN chmod +x /opt/mpc_pause_check.sh
+
 USER mopidy
+
+HEALTHCHECK --interval=60s --timeout=30s CMD bash /opt/mpc_pause_check.sh
 
 EXPOSE 6680
 
