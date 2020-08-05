@@ -53,7 +53,7 @@ const Player = () => {
 
   useEffect(() => {
     const audio = document.getElementById("player");
-    if (audio) {
+    if (!audio.paused) {
       setPlayer(audioRef);
     }
   }, [setPlayer]);
@@ -117,23 +117,23 @@ const Player = () => {
             onClose();
             setModal();
           }}
-          size="sm"
+          size='sm'
           isCentered
         >
           <ModalOverlay />
           <ModalContent>
             <ModalCloseButton />
             <ModalBody>
-              <Grid templateColumns="1fr 1fr" justifyItems="center" gap={0}>
+              <Grid templateColumns='1fr 1fr' justifyItems='center' gap={0}>
                 {modal ? (
                   modal.map((link) => (
                     <Link key={link.url} href={link.url} isExternal>
-                      <Button variant="ghost">{link.displayName}</Button>
+                      <Button variant='ghost'>{link.displayName}</Button>
                     </Link>
                   ))
                 ) : (
                   <div>
-                    <Spinner size="sm" /> Loading...
+                    <Spinner size='sm' /> Loading...
                   </div>
                 )}
               </Grid>
@@ -147,38 +147,38 @@ const Player = () => {
   return (
     <div>
       <Flex
-        direction="column"
-        justify="center"
-        align="center"
-        width="100%"
-        height="100%"
+        direction='column'
+        justify='center'
+        align='center'
+        width='100%'
+        height='100%'
       >
         <Box>
           <Grid
             m={2}
             p={2}
-            templateColumns="auto 1fr auto"
-            alignItems="center"
+            templateColumns='auto 1fr auto'
+            alignItems='center'
             gap={1}
           >
             <PseudoBox
-              gridRow="1/4"
-              size="80px"
-              aria-label="Play toggle"
+              gridRow='1/4'
+              size='80px'
+              aria-label='Play toggle'
               as={loading ? FaSpinner : playing ? FaPauseCircle : FaPlayCircle}
               onClick={togglePlay}
               _hover={{ color: colorHover[colorMode] }}
               mr={1}
               className={loading ? "icon-spin" : ""}
             />
-            <Text m={0} align="right">
+            <Text m={0} align='right'>
               <strong>{nowPlaying[0]}</strong>
             </Text>
-            <Text m={0} align="right">
+            <Text m={0} align='right'>
               {nowPlaying[1]}
             </Text>
 
-            <Flex direction="row" justify="center" maxWidth={400} p={2}>
+            <Flex direction='row' justify='center' maxWidth={400} p={2}>
               <Slider
                 defaultValue={100}
                 min={0}
@@ -188,13 +188,13 @@ const Player = () => {
                 width={80}
               >
                 <SliderTrack />
-                <SliderFilledTrack bg="tomato" />
+                <SliderFilledTrack bg='tomato' />
                 <SliderThumb size={2} />
               </Slider>
-              <Box size="20px" as={muted ? FaVolumeMute : FaVolumeUp} ml={3} />
+              <Box size='20px' as={muted ? FaVolumeMute : FaVolumeUp} ml={3} />
               <audio
-                id="player"
-                crossorigin="anonymouse"
+                id='player'
+                crossorigin='anonymouse'
                 ref={audioRef}
                 autoPlay
                 onPlay={() => setPlaying(true)}
@@ -204,19 +204,19 @@ const Player = () => {
               >
                 <source
                   src={variables.REACT_ICECAST_URL + "radio.mp3"}
-                  type="audio/mp3"
+                  type='audio/mp3'
                 />
                 Your browser does not support the audio element.
               </audio>
             </Flex>
-            <Text gridColumn="1/4">
+            <Text gridColumn='1/4'>
               <strong>Listeners: </strong>
               {listeners[0]} <strong>Peak: </strong>
               {listeners[1]}
             </Text>
-            <Box gridColumn="3" gridRow="1/4" alignItems="center">
+            <Box gridColumn='3' gridRow='1/4' alignItems='center'>
               <PseudoBox
-                size="25px"
+                size='25px'
                 as={FaHeart}
                 mx={1}
                 onClick={onOpen}
