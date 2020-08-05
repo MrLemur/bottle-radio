@@ -6,7 +6,6 @@ import {
   SliderThumb,
   Box,
   Flex,
-  PseudoBox,
   useColorMode,
   Text,
   Grid,
@@ -124,25 +123,26 @@ const Player = () => {
           size='sm'
           isCentered
         >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalCloseButton />
-            <ModalBody>
-              <Grid templateColumns='1fr 1fr' justifyItems='center' gap={0}>
-                {modal ? (
-                  modal.map((link) => (
-                    <Link key={link.url} href={link.url} isExternal>
-                      <Button variant='ghost'>{link.displayName}</Button>
-                    </Link>
-                  ))
-                ) : (
-                  <div>
-                    <Spinner size='sm' /> Loading...
-                  </div>
-                )}
-              </Grid>
-            </ModalBody>
-          </ModalContent>
+          <ModalOverlay>
+            <ModalContent>
+              <ModalCloseButton />
+              <ModalBody>
+                <Grid templateColumns='1fr 1fr' justifyItems='center' gap={0}>
+                  {modal ? (
+                    modal.map((link) => (
+                      <Link key={link.url} href={link.url} isExternal>
+                        <Button variant='ghost'>{link.displayName}</Button>
+                      </Link>
+                    ))
+                  ) : (
+                    <div>
+                      <Spinner size='sm' /> Loading...
+                    </div>
+                  )}
+                </Grid>
+              </ModalBody>
+            </ModalContent>
+          </ModalOverlay>
         </Modal>
       </div>
     );
@@ -165,9 +165,10 @@ const Player = () => {
             alignItems='center'
             gap={1}
           >
-            <PseudoBox
+            <Box
               gridRow='1/4'
-              size='80px'
+              w='80px'
+              h='80px'
               aria-label='Play toggle'
               as={loading ? FaSpinner : playing ? FaPauseCircle : FaPlayCircle}
               onClick={togglePlay}
@@ -191,14 +192,20 @@ const Player = () => {
                 onChange={changeVolume}
                 width={80}
               >
-                <SliderTrack />
-                <SliderFilledTrack bg='tomato' />
+                <SliderTrack>
+                  <SliderFilledTrack bg='tomato' />
+                </SliderTrack>
                 <SliderThumb size={2} />
               </Slider>
-              <Box size='20px' as={muted ? FaVolumeMute : FaVolumeUp} ml={3} />
+              <Box
+                w='20px'
+                h='20px'
+                as={muted ? FaVolumeMute : FaVolumeUp}
+                ml={3}
+              />
               <audio
                 id='player'
-                crossorigin='anonymous'
+                crossOrigin='anonymous'
                 autoPlay
                 preload='none'
                 ref={audioRef}
@@ -224,8 +231,9 @@ const Player = () => {
               {listeners[1]}
             </Text>
             <Box gridColumn='3' gridRow='1/4' alignItems='center'>
-              <PseudoBox
-                size='25px'
+              <Box
+                w='25px'
+                h='25px'
                 as={FaHeart}
                 mx={1}
                 onClick={onOpen}

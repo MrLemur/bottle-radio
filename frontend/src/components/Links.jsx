@@ -6,7 +6,7 @@ const Links = () => (
   <Stack>
     {links.map((link) => (
       <Link href={link.href} key={link.display} isExternal>
-        <Button variantColor='teal'>{link.display}</Button>
+        <Button colorScheme='teal'>{link.display}</Button>
       </Link>
     ))}
   </Stack>
