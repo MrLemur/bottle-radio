@@ -1,13 +1,12 @@
 import React, { useState, Fragment } from "react";
-import Player from "./Player.jsx";
-import Links from "./Links.jsx";
+import Player from "./Player";
+import Links from "./Links";
 import {
   Box,
   Button,
   Flex,
   Image,
   useColorMode,
-  PseudoBox,
   Code,
   Collapse,
   Text,
@@ -23,7 +22,6 @@ const Container = () => {
   const [logoSpinning, setLogoSpinning] = useState(false);
   const [modal, setModal] = useState();
   const [showVisualiser, setShowVisualiser] = useState(false);
-  const [showVisualiser, setShowVisualiser] = useState(false);
   const [player, setPlayer] = useState();
 
   const EmbedCode = () => {
@@ -37,7 +35,7 @@ const Container = () => {
             {`<iframe src = '${window.location.protocol}//${window.location.host}/embed' frameborder = '0' allowtransparency = 'true' style = 'width: 100%; min-height: 150px; border: 0;'></iframe>`}
           </Code>
         </Collapse>
-        <Button variantColor='blue' variant='link' onClick={handleToggle}>
+        <Button colorScheme='blue' variant='link' onClick={handleToggle}>
           Embed player
         </Button>
       </Box>
@@ -72,9 +70,10 @@ const Container = () => {
             pos='relative'
             zindex={1}
           >
-            <PseudoBox
+            <Box
               as={colorMode === "light" ? FaMoon : FaSun}
-              size='30px'
+              w='30px'
+              h='30px'
               onClick={toggleColorMode}
               color={color[colorMode]}
             />
