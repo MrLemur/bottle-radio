@@ -6,7 +6,6 @@ import {
   SliderThumb,
   Box,
   Flex,
-  PseudoBox,
   useColorMode,
   Text,
   Grid,
@@ -82,7 +81,7 @@ const PlayerEmbed = () => {
             alignItems='center'
             gap={1}
           >
-            <PseudoBox
+            <Box
               gridRow='1/4'
               size='80px'
               aria-label='Play toggle'
