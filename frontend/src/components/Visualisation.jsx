@@ -52,6 +52,12 @@ const Visualisation = (props) => {
         }
       };
       renderFrame();
+      document.documentElement.addEventListener("mousedown", function () {
+        if (context.state !== "running") {
+          console.log("AudioContext starting due to user input");
+          context.resume();
+        }
+      });
     };
     renderVisualisation();
   }, [props.audio]);

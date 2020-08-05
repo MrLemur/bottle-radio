@@ -38,6 +38,7 @@ const Player = () => {
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(true);
   const [nowPlaying, setNowPlaying] = useState(["No data", "No data"]);
   const [listeners, setListeners] = useState([0, 0]);
   const { colorMode } = useColorMode();
@@ -53,7 +54,7 @@ const Player = () => {
 
   useEffect(() => {
     const audio = document.getElementById("player");
-    if (!audio.paused) {
+    if (audio) {
       setPlayer(audioRef);
     }
   }, [setPlayer]);
@@ -84,6 +85,9 @@ const Player = () => {
 
   const togglePlay = () => {
     let player = document.getElementById("player");
+    if (firstLoad) {
+      setFirstLoad(false);
+    }
     if (player.paused) {
       setPlaying(true);
       player.load();
@@ -194,13 +198,18 @@ const Player = () => {
               <Box size='20px' as={muted ? FaVolumeMute : FaVolumeUp} ml={3} />
               <audio
                 id='player'
-                crossorigin='anonymouse'
-                ref={audioRef}
+                crossorigin='anonymous'
                 autoPlay
+                preload='none'
+                ref={audioRef}
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
-                onLoadStart={() => setLoading(true)}
-                onLoadedData={() => setLoading(false)}
+                onLoadStart={() => {
+                  if (!firstLoad) {
+                    setLoading(true);
+                  }
+                }}
+                onCanPlay={() => setLoading(false)}
               >
                 <source
                   src={variables.REACT_ICECAST_URL + "radio.mp3"}
