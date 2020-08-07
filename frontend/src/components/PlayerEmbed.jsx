@@ -107,7 +107,7 @@ const PlayerEmbed = () => {
                 onChange={changeVolume}
                 width={80}
               >
-                <SliderTrack>
+                <SliderTrack style={{ height: "5px" }}>
                   <SliderFilledTrack bg='tomato' />
                 </SliderTrack>
                 <SliderThumb size={2} />
