@@ -24,7 +24,6 @@ const useSaveTrack = (track, artist, key) => {
           getApi(apiUrl).then((streamingServices) => {
             if (streamingServices && streamingServices.linksByPlatform) {
               Object.entries(streamingServices.linksByPlatform).map((node) => {
-                console.log(node);
                 let url = node[1].url;
                 let displayName = displayNameFix(node[0]);
                 links.push({
