@@ -128,7 +128,7 @@ const Player = () => {
               <ModalCloseButton />
               <ModalBody>
                 <Grid templateColumns='1fr 1fr' justifyItems='center' gap={0}>
-                  {modal & (modal.length > 0) ? (
+                  {modal && modal.length > 0 ? (
                     modal.map((link) => (
                       <Link key={link.url} href={link.url} isExternal>
                         <Button variant='ghost'>{link.displayName}</Button>
