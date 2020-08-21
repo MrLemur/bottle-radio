@@ -4,10 +4,9 @@ const displayNameFix = (name) => {
   let result = name.replace(/([A-Z])/g, " $1");
   let finalResult = result.charAt(0).toUpperCase() + result.slice(1);
   return finalResult;
-}
+};
 
 const useSaveTrack = (track, artist, key) => {
-
   const [trackList, setTrackList] = useState([]);
   const getApi = async (url) => {
     let response = await fetch(url);
@@ -31,7 +30,7 @@ const useSaveTrack = (track, artist, key) => {
                 links.push({
                   type: "listen",
                   displayName: displayName,
-                  url: url
+                  url: url,
                 });
                 return null;
               });
