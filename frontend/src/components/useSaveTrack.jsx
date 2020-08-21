@@ -36,6 +36,8 @@ const useSaveTrack = (track, artist, key) => {
             }
             setTrackList(links);
           });
+        } else {
+          setTrackList([]);
         }
       });
     }
