@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/core": "next",
+    "@chakra-ui/core": "^1.0.0-rc.5",
     "@chakra-ui/theme": "^1.0.0-rc.0",
     "@testing-library/jest-dom": "^5.7.0",
     "@testing-library/react": "^10.0.4",
