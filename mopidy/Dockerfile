@@ -1,49 +1,124 @@
-FROM debian:buster
+FROM circleci/python:3.7.5
 
 LABEL Author Kassim Benhaddad <kassim@kass.im>
 
+# Switch to the root user while we do our changes
+USER root
+
+# Install GStreamer and other required Debian packages
 RUN apt-get update \
-       && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing \
-       gcc \
-       curl \
-       python-crypto \
-       python3-setuptools \
-       python-pip \
-       wget \
-       git
+    && apt-get install -y \
+    dumb-init \
+    graphviz-dev \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-pulseaudio \
+    libasound2-dev \
+    python-dev \
+    python-gst-1.0 \
+    python3-gst-1.0 \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L https://apt.mopidy.com/mopidy.gpg -o /tmp/mopidy.gpg \
-       && wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/buster.list \
-       && apt-key add /tmp/mopidy.gpg \
-       && apt-get update \
-       && apt-get install -y mopidy \
-       && apt-get install -y mopidy-spotify \
-       && apt-get install -y mopidy-mpd \
-       && apt-get install -y mpc
+# Make python3-gst-1.0 available to non-Debian Python 3.7 installation
+RUN ln -s /usr/lib/python3/dist-packages/gi /usr/local/lib/python3.7/site-packages/gi
 
-RUN cd /tmp/ \
-       && git clone --single-branch --branch develop https://github.com/jaedb/Iris.git \
-       && cd Iris \
-       && python3 setup.py install
+# Install libspotify-dev from apt.mopidy.com
+RUN wget -q -O - https://apt.mopidy.com/mopidy.gpg \
+    | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn apt-key add - \
+    && wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/buster.list \
+    && apt-get update \
+    && apt-get install -y libspotify-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/dist-packages/Mopidy_Iris-3.44.0-py3.7.egg/mopidy_iris/system.sh" >> /etc/sudoers
+# Clone Iris from the repository and install in development mode.
+# This allows a binding at "/iris" to map to your local folder for development, rather than
+# installing using pip.
+RUN git clone https://github.com/jaedb/Iris.git /iris \
+    && cd /iris \
+    && python3.7 setup.py develop \
+    && mkdir -p /var/lib/mopidy/.config \
+    && ln -s /config /var/lib/mopidy/.config/mopidy \
+    # Allow mopidy user to run system commands (restart, local scan, etc)
+    && echo "mopidy ALL=NOPASSWD: /iris/mopidy_iris/system.sh" >> /etc/sudoers
 
-RUN apt-get purge --auto-remove -y \
-       curl \
-       gcc \
-       && apt-get clean \
-       && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache 
+# Install additional Python dependencies
+RUN python3.7 -m pip install --no-cache \
+    tox \
+    mopidy-mpd \
+    mopidy-spotify \
+    mopidy-local \
+    Mopidy-Youtube \
+    Mopidy-SoundCloud \
+    Mopidy-Podcast 
 
-COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
+# Allows any user to run mopidy, but runs by default as a randomly generated UID/GID.
+RUN useradd -ms /bin/bash mopidy
+ENV HOME=/var/lib/mopidy
+RUN set -ex \
+    && usermod -G audio,sudo mopidy \
+    && mkdir /var/lib/mopidy/local \
+    && chown mopidy:audio -R $HOME /iris \
+    && chmod go+rwx -R $HOME /iris \
+    && echo "1" >> /IS_CONTAINER
 
 COPY mpc_pause_check.sh /opt/
 
 RUN chmod +x /opt/mpc_pause_check.sh
 
-USER mopidy
-
 HEALTHCHECK --interval=60s --timeout=30s CMD bash /opt/mpc_pause_check.sh
+
+# Runs as mopidy user by default.
+USER mopidy:audio
+
+VOLUME ["/var/lib/mopidy/local"]
 
 EXPOSE 6680
 
-ENTRYPOINT ["/usr/bin/mopidy"]
+ENTRYPOINT ["/usr/local/bin/mopidy"]
+
+# RUN apt-get update \
+#        && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-missing \
+#        gcc \
+#        curl \
+#        python-crypto \
+#        python3-setuptools \
+#        python-pip \
+#        wget \
+#        git
+
+# RUN curl -L https://apt.mopidy.com/mopidy.gpg -o /tmp/mopidy.gpg \
+#        && wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/buster.list \
+#        && apt-key add /tmp/mopidy.gpg \
+#        && apt-get update \
+#        && apt-get install -y mopidy \
+#        && apt-get install -y mopidy-spotify \
+#        && apt-get install -y mopidy-mpd \
+#        && apt-get install -y mpc
+
+# RUN cd /tmp/ \
+#        && git clone https://github.com/jaedb/Iris.git \
+#        && cd Iris \
+#        && python3 setup.py install
+
+# RUN echo "mopidy ALL=NOPASSWD: /usr/local/lib/python3.7/dist-packages/Mopidy_Iris-3.44.0-py3.7.egg/mopidy_iris/system.sh" >> /etc/sudoers
+
+# RUN apt-get purge --auto-remove -y \
+#        curl \
+#        gcc \
+#        && apt-get clean \
+#        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache 
+
+# COPY mopidy.conf /var/lib/mopidy/.config/mopidy/mopidy.conf
+
+# COPY mpc_pause_check.sh /opt/
+
+# RUN chmod +x /opt/mpc_pause_check.sh
+
+# USER mopidy
+
+# HEALTHCHECK --interval=60s --timeout=30s CMD bash /opt/mpc_pause_check.sh
+
+# EXPOSE 6680
+
+# ENTRYPOINT ["/usr/bin/mopidy"]

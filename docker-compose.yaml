@@ -48,6 +48,8 @@ services:
       - "-o spotify/password=${SPOTIFY_PASSWORD}"
       - "-o spotify/client_id=${SPOTIFY_CLIENT_ID}"
       - "-o spotify/client_secret=${SPOTIFY_CLIENT_SECRET}"
+    volumes:
+      - ./mopidy/mopidy.conf:/config/mopidy.conf
     depends_on:
       - liquidsoap
     labels:
@@ -59,14 +61,18 @@ services:
       - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
 
   liquidsoap:
-    build:
-      context: ./liquidsoap
+    image: savonet/liquidsoap:master
     environment:
       - LIQUIDSOAP_DJ_USERNAME=${LIQUIDSOAP_DJ_USERNAME}
       - LIQUIDSOAP_DJ_PASSWORD=${LIQUIDSOAP_DJ_PASSWORD}
       - ICECAST_SOURCE_PASSWORD=${ICECAST_SOURCE_PASSWORD}
     volumes:
-      - ./conf:/etc/liquidsoap
+      - ./liquidsoap:/etc/liquidsoap
+    expose:
+      - "8005"
+      - "8010"
+    user: liquidsoap
+    command: ["liquidsoap", "/etc/liquidsoap/default.liq"]
     depends_on:
       - icecast
     labels:
@@ -82,6 +88,8 @@ services:
       - ICECAST_ADMIN_PASSWORD=${ICECAST_ADMIN_PASSWORD}
       - ICECAST_PASSWORD=${ICECAST_PASSWORD}
       - ICECAST_RELAY_PASSWORD=${ICECAST_RELAY_PASSWORD}
+      - ICECAST_HOSTNAME=stream.${DOMAIN}
+    user: root
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.icecast.rule=Host(`stream.${DOMAIN}`)"
