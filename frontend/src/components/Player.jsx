@@ -183,14 +183,14 @@ const Player = () => {
               {nowPlaying[1]}
             </Text>
 
-            <Flex direction="row" justify="center" maxWidth={250} p={2}>
+            <Flex direction="row" justify="center" maxWidth={400} p={2}>
               <Slider
                 defaultValue={100}
                 min={0}
                 max={100}
                 step={10}
                 onChange={changeVolume}
-                width={80}
+                width="80px"
               >
                 <SliderTrack>
                   <SliderFilledTrack bg="tomato" />
