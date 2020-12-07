@@ -1564,7 +1564,7 @@
     "@types/tinycolor2" "1.4.2"
     tinycolor2 "1.4.2"
 
-"@chakra-ui/theme@1.2.0", "@chakra-ui/theme@^1.0.0-rc.0":
+"@chakra-ui/theme@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@chakra-ui/theme/-/theme-1.2.0.tgz#4cf3337fc9389fd76ed23a8027196efe2d48a4cf"
   integrity sha512-IcSfQPpBK9tkUmeBUF2eu5AVa3bH4DkbPlmaPwggDoQmWgcRJxyaPP1zvqJ++XAgeqXxdEKkOJuSirrmSPPbfg==
