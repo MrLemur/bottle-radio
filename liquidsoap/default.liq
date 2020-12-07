@@ -40,15 +40,13 @@ def from_live(jingle,old,new) =
   # Compose this in sequence with
   # the new source
   sequence([s,fade.initial(new)],merge=true)
-
 end
 
 jingle = audio_to_stereo(single("/etc/liquidsoap/jingle.mp3"))
 
+mopidy_stream = mksafe(audio_to_stereo(input.harbor("/mopidy", id = "mopidy_stream", port = 8010,  user = "mopidy", password = "mopidy", metadata_charset = "UTF-8", max = 30.0)))
 
-mopidy_stream = mksafe(audio_to_stereo(input.harbor("/mopidy", id = "mopidy_stream", port = 8010,  user = "mopidy", password = "mopidy", icy = true, icy_metadata_charset = "UTF-8", metadata_charset = "UTF-8", max = 30.0)))
-
-# Add missing metadata to live stream funcxtoin
+# Add missing metadata to live stream function
 def fix_live_metadata(m) =
   # Grab the current title
   title = m["title"]
@@ -57,7 +55,7 @@ def fix_live_metadata(m) =
 end
 
 # Live Broadcasting
-live = audio_to_stereo(input.harbor("/", id = "live_streamer_input", port = 8005,  user = get_var("LIQUIDSOAP_DJ_USERNAME","dj"), password = get_var("LIQUIDSOAP_DJ_PASSWORD","dj"), icy = true, icy_metadata_charset = "UTF-8", metadata_charset = "UTF-8", buffer = 5.0))
+live = audio_to_stereo(input.harbor("/", id = "live_streamer_input", port = 8005,  user = get_var("LIQUIDSOAP_DJ_USERNAME","dj"), password = get_var("LIQUIDSOAP_DJ_PASSWORD","dj"), metadata_charset = "UTF-8"))
 # Add metadata if missing to live stream
 live = map_metadata(fix_live_metadata, live)
 ignore(output.dummy(live, fallible=true))
