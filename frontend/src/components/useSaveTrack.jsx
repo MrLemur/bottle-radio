@@ -20,7 +20,7 @@ const useSaveTrack = (track, artist, key) => {
       let links = [];
       getApi(searchUrl).then((data) => {
         if (data.results[0] && data.results[0].wrapperType === "track") {
-          const apiUrl = `https://thingproxy.freeboard.io/fetch/https://api.song.link/v1-alpha.1/links?platform=itunes&type=song&userCountry=GB&id=${data.results[0].trackId}`;
+          const apiUrl = `https://cors-anywhere.herokuapp.com/https://api.song.link/v1-alpha.1/links?platform=itunes&type=song&userCountry=GB&id=${data.results[0].trackId}`;
           getApi(apiUrl).then((streamingServices) => {
             if (streamingServices && streamingServices.linksByPlatform) {
               Object.entries(streamingServices.linksByPlatform).map((node) => {
