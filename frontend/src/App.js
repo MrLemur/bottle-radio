@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { ChakraProvider, CSSReset } from "@chakra-ui/core";
+import { ChakraProvider, CSSReset } from "@chakra-ui/react";
 import Container from "./components/Container";
 import PlayerEmbed from "./components/PlayerEmbed";
 import chakraTheme from "@chakra-ui/theme";
@@ -12,7 +12,7 @@ theme.config.useSystemColorMode = true;
 function App() {
   const path = window.location.pathname;
   return (
-    <div className='App'>
+    <div className="App">
       {path === "/embed" ? (
         <PlayerEmbed />
       ) : (

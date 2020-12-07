@@ -9,7 +9,7 @@ import {
   useColorMode,
   Text,
   Grid,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import {
   FaPlayCircle,
   FaPauseCircle,
@@ -66,39 +66,39 @@ const PlayerEmbed = () => {
   return (
     <div>
       <Flex
-        direction='column'
-        justify='center'
-        align='center'
-        width='100%'
-        height='100%'
-        bg='transparent'
+        direction="column"
+        justify="center"
+        align="center"
+        width="100%"
+        height="100%"
+        bg="transparent"
       >
         <Box>
           <Grid
             m={2}
             p={2}
-            templateColumns='auto 1fr'
-            alignItems='center'
+            templateColumns="auto 1fr"
+            alignItems="center"
             gap={1}
           >
             <Box
-              gridRow='1/4'
-              size='80px'
-              aria-label='Play toggle'
+              gridRow="1/4"
+              size="80px"
+              aria-label="Play toggle"
               as={loading ? FaSpinner : playing ? FaPauseCircle : FaPlayCircle}
               onClick={togglePlay}
               _hover={{ color: colorHover[colorMode] }}
               mr={1}
               className={loading ? "icon-spin" : ""}
             />
-            <Text m={0} align='right'>
+            <Text m={0} align="right">
               <strong>{nowPlaying[0]}</strong>
             </Text>
-            <Text m={0} align='right'>
+            <Text m={0} align="right">
               {nowPlaying[1]}
             </Text>
 
-            <Flex direction='row' justify='center' maxWidth={400} p={2}>
+            <Flex direction="row" justify="center" maxWidth={400} p={2}>
               <Slider
                 defaultValue={100}
                 min={0}
@@ -108,18 +108,18 @@ const PlayerEmbed = () => {
                 width={80}
               >
                 <SliderTrack style={{ height: "5px" }}>
-                  <SliderFilledTrack bg='tomato' />
+                  <SliderFilledTrack bg="tomato" />
                 </SliderTrack>
                 <SliderThumb size={2} />
               </Slider>
               <Box
-                w='20px'
-                h='20px'
+                w="20px"
+                h="20px"
                 as={muted ? FaVolumeMute : FaVolumeUp}
                 ml={3}
               />
               <audio
-                id='player'
+                id="player"
                 autoPlay
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
@@ -128,7 +128,7 @@ const PlayerEmbed = () => {
               >
                 <source
                   src={variables.REACT_ICECAST_URL + "radio.mp3"}
-                  type='audio/mp3'
+                  type="audio/mp3"
                 />
                 Your browser does not support the audio element.
               </audio>

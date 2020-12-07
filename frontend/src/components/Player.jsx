@@ -18,7 +18,7 @@ import {
   ModalCloseButton,
   Link,
   Spinner,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import {
   FaPlayCircle,
   FaPauseCircle,
