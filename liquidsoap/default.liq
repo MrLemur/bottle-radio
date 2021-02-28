@@ -70,4 +70,4 @@ mic = input.harbor("mic", port=8015, user = get_var("LIQUIDSOAP_DJ_USERNAME","dj
 radio = smooth_add(delay=0.3, p=0.30, normal=radio, special=mic)
 
 # Local Broadcasts
-output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = get_var("ICECAST_SOURCE_PASSWORD","admin"), mount = "/radio.mp3", name = "The Isolalation Station", description = "The premier SB station.", genre = "", public = false, encoding = "UTF-8", radio)
+output.icecast(%mp3(samplerate=44100, stereo=true, bitrate=256, id3v2=true), id="icecast_stream", host = "icecast", port = 8000, password = get_var("ICECAST_SOURCE_PASSWORD","admin"), mount = "/radio.mp3", name = "Bottle Radio", description = "Radio in a bottle.", genre = "", public = false, encoding = "UTF-8", radio)
