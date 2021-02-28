@@ -7,13 +7,13 @@
     "@emotion/react": "^11.1.2",
     "@emotion/styled": "^11.0.0",
     "@testing-library/jest-dom": "^5.7.0",
-    "@testing-library/react": "^10.0.4",
-    "@testing-library/user-event": "^10.3.1",
-    "framer-motion": "^2.9.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-icons": "^3.10.0",
-    "react-scripts": "3.4.1"
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.4",
+    "framer-motion": "^3.7.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
+    "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
