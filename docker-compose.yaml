@@ -50,6 +50,7 @@ services:
       - "-o spotify/client_secret=${SPOTIFY_CLIENT_SECRET}"
     volumes:
       - ./mopidy/mopidy.conf:/config/mopidy.conf
+      - ${MOPIDY_LOCAL_DIR}:/media
     depends_on:
       - liquidsoap
     labels:
@@ -57,7 +58,7 @@ services:
       - "traefik.http.routers.mopidy.rule=Host(`spotify.${DOMAIN}`)"
       - "traefik.http.routers.mopidy.tls=true"
       - "traefik.http.routers.mopidy.tls.certresolver=resolver"
-      - "traefik.http.middlewares.mopidy_auth.basicauth.users=${MOPIDY_AUTH}"
+      - "traefik.http.middlewares.mopidy_auth.basicauth.users=${MOPIDY_USERNAME}:${MOPIDY_ENCRYPTED_PASSWORD}"
       - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
 
   liquidsoap:
@@ -82,7 +83,8 @@ services:
       - "traefik.tcp.services.liquidsoap.loadbalancer.server.port=8005"
 
   icecast:
-    image: moul/icecast
+    build:
+      context: ./icecast
     environment:
       - ICECAST_SOURCE_PASSWORD=${ICECAST_SOURCE_PASSWORD}
       - ICECAST_ADMIN_PASSWORD=${ICECAST_ADMIN_PASSWORD}
