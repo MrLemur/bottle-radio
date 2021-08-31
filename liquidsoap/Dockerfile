@@ -1,4 +1,4 @@
-FROM savonet/liquidsoap:master
+FROM savonet/liquidsoap:main
 
 EXPOSE 8005 8010
 
