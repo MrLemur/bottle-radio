@@ -96,7 +96,7 @@ services:
       - "traefik.http.routers.icecast.tls=true"
       - "traefik.http.routers.icecast.tls.certresolver=resolver"
       - "traefik.http.middlewares.icecast_cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
-      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolalloworiginlist=*"
       - "traefik.http.middlewares.icecast_cors.headers.accesscontrolmaxage=100"
       - "traefik.http.middlewares.icecast_cors.headers.addvaryheader=true"
       - "traefik.http.routers.icecast.middlewares=icecast_cors@docker"
