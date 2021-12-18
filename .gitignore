@@ -1,3 +1,4 @@
 .DS_Store*
 .env
 letsencrypt/*
+frontend/song-links/song-links.json

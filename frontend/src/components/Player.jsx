@@ -45,8 +45,7 @@ const Player = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const trackLinks = useSaveTrack(
     nowPlaying[0],
-    nowPlaying[1],
-    variables.REACT_KEY
+    nowPlaying[1]
   );
   const audioRef = useRef(null);
   const { setPlayer } = useContext(VisualiserContext);

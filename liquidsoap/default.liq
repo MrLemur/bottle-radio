@@ -42,17 +42,29 @@ def from_live(jingle,old,new) =
   sequence([s,fade.initial(new)],merge=true)
 end
 
-jingle = audio_to_stereo(single("/etc/liquidsoap/jingle.mp3"))
-
-mopidy_stream = mksafe(audio_to_stereo(input.harbor("/mopidy", id = "mopidy_stream", port = 8010,  user = "mopidy", password = "mopidy", metadata_charset = "UTF-8", max = 30.0)))
-
 # Add missing metadata to live stream function
 def fix_live_metadata(m) =
   # Grab the current title
   title = m["title"]
+  artist = m["artist"]
   # Insert metadata if it is missing during live broadcast
   if title == "Unknown" or title == "" then [("title","Live Broadcast - This is a live broadcast")] else [("title",title)] end
 end
+
+def log_metadata(m) =
+  # Grab the current title and artist
+  metadata = string.split(separator="-",m["title"])
+  title = url.encode(string.trim(list.nth(default="", metadata, 0)))
+  artist = url.encode(string.trim(list.nth(default="", metadata, 1)))
+  ignore(http.head(timeout=0.5, "http://frontend:10000/?title=#{title}&artist=#{artist}"))
+  print("Sending metadata to frontend: #{title} by #{artist}")
+end
+
+jingle = audio_to_stereo(single("/etc/liquidsoap/jingle.mp3"))
+
+mopidy_stream = mksafe(audio_to_stereo(input.harbor("/mopidy", id = "mopidy_stream", port = 8010,  user = "mopidy", password = "mopidy", metadata_charset = "UTF-8", max = 30.0)))
+
+mopidy_stream = on_metadata(log_metadata, mopidy_stream)
 
 # Live Broadcasting
 live = audio_to_stereo(input.harbor("/", id = "live_streamer_input", port = 8005,  user = get_var("LIQUIDSOAP_DJ_USERNAME","dj"), password = get_var("LIQUIDSOAP_DJ_PASSWORD","dj"), metadata_charset = "UTF-8"))
