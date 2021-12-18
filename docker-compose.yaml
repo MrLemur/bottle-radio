@@ -61,7 +61,7 @@ services:
       - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
 
   liquidsoap:
-    image: savonet/liquidsoap:main
+    image: savonet/liquidsoap:v1.4.4
     environment:
       - LIQUIDSOAP_DJ_USERNAME=${LIQUIDSOAP_DJ_USERNAME}
       - LIQUIDSOAP_DJ_PASSWORD=${LIQUIDSOAP_DJ_PASSWORD}
@@ -72,7 +72,7 @@ services:
       - "8005"
       - "8010"
     user: liquidsoap
-    command: ["liquidsoap", "/etc/liquidsoap/default.liq"]
+    command: ["/etc/liquidsoap/default.liq"]
     depends_on:
       - icecast
     labels:
@@ -96,7 +96,7 @@ services:
       - "traefik.http.routers.icecast.tls=true"
       - "traefik.http.routers.icecast.tls.certresolver=resolver"
       - "traefik.http.middlewares.icecast_cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT"
-      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolalloworigin=*"
+      - "traefik.http.middlewares.icecast_cors.headers.accesscontrolalloworiginlist=*"
       - "traefik.http.middlewares.icecast_cors.headers.accesscontrolmaxage=100"
       - "traefik.http.middlewares.icecast_cors.headers.addvaryheader=true"
       - "traefik.http.routers.icecast.middlewares=icecast_cors@docker"
