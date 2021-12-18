@@ -16,7 +16,7 @@ const useSaveTrack = (track, artist, key) => {
   const searchUrl = `https://itunes.apple.com/search?term=${track} ${artist}&country=IE&entity=song&key=${key}`;
 
   useEffect(() => {
-    if (track != "No data" && artist != "No data") {
+    if (track !== "No data" && artist !== "No data") {
       let links = [];
       getApi(searchUrl).then((data) => {
         if (data.results[0] && data.results[0].wrapperType === "track") {
