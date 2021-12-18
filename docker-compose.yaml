@@ -61,7 +61,7 @@ services:
       - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
 
   liquidsoap:
-    image: savonet/liquidsoap:main
+    image: savonet/liquidsoap:v1.4.4
     environment:
       - LIQUIDSOAP_DJ_USERNAME=${LIQUIDSOAP_DJ_USERNAME}
       - LIQUIDSOAP_DJ_PASSWORD=${LIQUIDSOAP_DJ_PASSWORD}
@@ -72,7 +72,7 @@ services:
       - "8005"
       - "8010"
     user: liquidsoap
-    command: ["liquidsoap", "/etc/liquidsoap/default.liq"]
+    command: ["/etc/liquidsoap/default.liq"]
     depends_on:
       - icecast
     labels:

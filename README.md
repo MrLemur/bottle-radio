@@ -116,7 +116,7 @@ sudo docker-compose up
 | `SPOTIFY_CLIENT_ID`       | [value from here](https://mopidy.com/ext/spotify/#authentication) | `687468-47843rh7f8`                  |
 | `SPOTIFY_CLIENT_SECRET`   | [value from here](https://mopidy.com/ext/spotify/#authentication) | `bBYUBLYBh87B87G\$=`                 |
 
-<sup>1</sup> Use `docker.localhost` when running locally
+<sup>1</sup> Use `docker.localhost` when running locally - only tested with Chromium based browsers
 
 <sup>2</sup> Use [this site](https://hostingcanada.org/htpasswd-generator/) to generate the value using with bcrypt encryption
 
