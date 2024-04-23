@@ -61,7 +61,7 @@ services:
       - "traefik.http.routers.mopidy.middlewares=mopidy_auth@docker"
 
   liquidsoap:
-    image: savonet/liquidsoap:v1.4.4
+    image: ghcr.io/savonet/liquidsoap:v2.2.4
     environment:
       - LIQUIDSOAP_DJ_USERNAME=${LIQUIDSOAP_DJ_USERNAME}
       - LIQUIDSOAP_DJ_PASSWORD=${LIQUIDSOAP_DJ_PASSWORD}

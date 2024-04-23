@@ -17,9 +17,9 @@ RUN apt-get update \
     python3-gst-1.0 \
     python3-pip
 
-RUN wget -q -O - https://apt.mopidy.com/mopidy.gpg \
-    | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn apt-key add - \
-    && wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/buster.list \
+RUN mkdir -p /etc/apt/keyrings \
+    && wget -q -O /etc/apt/keyrings/mopidy-archive-keyring.gpg https://apt.mopidy.com/mopidy.gpg \
+    && wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/bullseye.list \
     && apt-get update \
     && apt-get install -y libspotify-dev \
     && rm -rf /var/lib/apt/lists/*
@@ -27,11 +27,14 @@ RUN wget -q -O - https://apt.mopidy.com/mopidy.gpg \
 RUN wget -q -O libshout3_2.4.1-2_amd64.deb http://ftp.de.debian.org/debian/pool/main/libs/libshout/libshout3_2.4.1-2_amd64.deb \
     && dpkg -i ./libshout3_2.4.1-2_amd64.deb
 
+RUN wget -q -O gst-plugin-spotify_0.12.2-1_amd64.deb https://github.com/kingosticks/gst-plugins-rs-build/releases/download/gst-plugin-spotify_0.12.2-1/gst-plugin-spotify_0.12.2-1_amd64.deb \
+    && dpkg -i ./gst-plugin-spotify_0.12.2-1_amd64.deb
+
 # Install additional Python dependencies
 RUN python3 -m pip install --no-cache \
     tox \
     mopidy-mpd \
-    mopidy-spotify \
+    Mopidy-Spotify==5.0.0a1 \
     mopidy-local \
     Mopidy-SoundCloud \
     Mopidy-Podcast \
