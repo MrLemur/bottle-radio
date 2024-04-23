@@ -20,29 +20,20 @@ end
 
 jingle = single("/etc/liquidsoap/jingle.mp3")
 
-to_live = ref(false)
-
-# def transition(a,b)
-#     sequence([a.source,jingle, b.source])
-#   else
-#     # Else, apply the standard smart transition
-#     cross.smart(a,jingle, b)
-#   end
-# end
-
-def f(old, new) =
-  old = fade.out(old)
-
-  # Superpose the jingle
-  f = add([jingle, old])
-  sequence([f, new])
+def to_live(old, new) =
+  add(
+    normalize=false,
+    [
+      fade.in(new),
+      sequence([blank(duration=1.), jingle, fallback([])]),
+      fade.out(old)
+    ]
+  )
 end
 
-# def transition(old, new) =
-#   sequence([fade.out(old.source), jingle, fade.in(new.source)])
-# end
-
-# Add missing metadata to live stream function
+def from_live(old, new) =
+  sequence(merge=true, [fade.out(old), jingle, fade.in(new)])
+end
 
 # Add missing metadata to live stream function
 def fix_live_metadata(m) =
@@ -51,8 +42,6 @@ def fix_live_metadata(m) =
   # Grab the current title
   title = m["title"]
   artist = m["artist"]
-
-  # Insert metadata if it is missing during live broadcast
 
   # Insert metadata if it is missing during live broadcast
   if
@@ -70,8 +59,6 @@ def fix_live_metadata(m) =
 end
 
 def log_metadata(m) =
-  # Grab the current title and artist
-
   # Grab the current title and artist
   metadata = string.split(separator="-", m["title"])
   title = url.encode(string.trim(list.nth(default="", metadata, 0)))
@@ -104,8 +91,6 @@ mopidy_stream =
 mopidy_stream = source.on_metadata(mopidy_stream, log_metadata)
 
 # Live Broadcasting
-
-# Live Broadcasting
 live =
   input.harbor(
     "/",
@@ -117,29 +102,13 @@ live =
   )
 
 # Add metadata if missing to live stream
-
-# Add metadata if missing to live stream
 live = map_metadata(fix_live_metadata, live)
-
-# def check_live() =
-#   if
-#     live.is_ready()
-#   then
-#     # Only do that once:
-#     if not !to_live then to_live := true end
-#   else
-#     # If not available, revert to radio songs and normal crossfade transitions
-#     to_live := false
-#   end
-# end
-
-# radio = source.on_frame(radio, check_live)
 
 radio =
   fallback(
     track_sensitive=false,
     transition_length=11.0,
-    transitions=[f, f],
+    transitions=[to_live, from_live],
     [live, mopidy_stream]
   )
 
